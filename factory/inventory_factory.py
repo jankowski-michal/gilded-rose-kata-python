@@ -9,7 +9,6 @@ class GoodCategory:
 
     @staticmethod
     def build_for_item(item):
-
         if item.name == SULFURAS:
             return Sulfuras(quality=item.quality, sell_in=item.sell_in)
         elif item.name == AGED_BRIE:
