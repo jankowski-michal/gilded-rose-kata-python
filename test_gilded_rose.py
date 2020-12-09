@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from gilded_rose import Item, GildedRose, BACKSTAGE_PASS, AGED_BRIE, SULFURAS
+from factory.inventory_factory import AGED_BRIE, SULFURAS, BACKSTAGE_PASS
+from gilded_rose import Item, GildedRose
 
 
 def create_item_and_update_quality(name, sell_in, quality):
