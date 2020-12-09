@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from gilded_rose import Item, GildedRose
+from gilded_rose import Item, GildedRose, BACKSTAGE_PASS, AGED_BRIE, SULFURAS
 
 CONJURED_MANA_CAKE = 'Conjured Mana Cake'
-SULFURAS = 'Sulfuras, Hand of Ragnaros'
 ELIXIR_OF_THE_MONGOOSE = 'Elixir of the Mongoose'
 DEXTERITY_VEST = '+5 Dexterity Vest'
-AGED_BRIE = 'Aged Brie'
-BACKSTAGE_PASSES = 'Backstage passes to a TAFKAL80ETC concert'
 
 
 class GildedRoseTest(unittest.TestCase):
@@ -33,10 +30,10 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(expected, item.quality)
 
     def assert_backstage_passes_quality(self, expected, sell_in, quality):
-        self.assert_item_quality(expected, BACKSTAGE_PASSES, sell_in, quality)
+        self.assert_item_quality(expected, BACKSTAGE_PASS, sell_in, quality)
 
     def assert_backstage_passes_sell_in(self, expected, sell_in, quality):
-        self.assert_item_sell_in(expected, BACKSTAGE_PASSES, sell_in, quality)
+        self.assert_item_sell_in(expected, BACKSTAGE_PASS, sell_in, quality)
 
     def assert_brie_quality(self, expected, sell_in, quality):
         self.assert_item_quality(expected, AGED_BRIE, sell_in, quality)
