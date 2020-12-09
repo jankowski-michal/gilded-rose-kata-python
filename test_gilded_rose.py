@@ -3,6 +3,13 @@ import unittest
 
 from gilded_rose import Item, GildedRose
 
+CONJURED_MANA_CAKE = 'Conjured Mana Cake'
+SULFURAS = 'Sulfuras, Hand of Ragnaros'
+ELIXIR_OF_THE_MONGOOSE = 'Elixir of the Mongoose'
+DEXTERITY_VEST = '+5 Dexterity Vest'
+AGED_BRIE = 'Aged Brie'
+BACKSTAGE_PASSES = 'Backstage passes to a TAFKAL80ETC concert'
+
 
 class GildedRoseTest(unittest.TestCase):
     def test_foo(self):
@@ -11,70 +18,88 @@ class GildedRoseTest(unittest.TestCase):
         gilded_rose.update_quality()
         self.assertEqual('foo', items[0].name)
 
-    def test_fixture(self):
-        report_lines = []
-        items = [
-            Item(name='+5 Dexterity Vest', sell_in=10, quality=20),
-            Item(name='Aged Brie', sell_in=2, quality=0),
-            Item(name='Aged Brie', sell_in=-1, quality=0),
-            Item(name='Elixir of the Mongoose', sell_in=5, quality=7),
-            Item(name='Elixir of the Mongoose', sell_in=-1, quality=7),
-            Item(name='Sulfuras, Hand of Ragnaros', sell_in=0, quality=80),
-            Item(name='Sulfuras, Hand of Ragnaros', sell_in=-1, quality=80),
-            Item(name='Backstage passes to a TAFKAL80ETC concert', sell_in=15, quality=20),
-            Item(name='Backstage passes to a TAFKAL80ETC concert', sell_in=10, quality=49),
-            Item(name='Backstage passes to a TAFKAL80ETC concert', sell_in=5, quality=49),
-            Item(name='Backstage passes to a TAFKAL80ETC concert', sell_in=4, quality=47),
-            Item(name='Backstage passes to a TAFKAL80ETC concert', sell_in=-1, quality=47),
-            Item(name='Conjured Mana Cake', sell_in=3, quality=6),  # <-- :O
-        ]
+    def create_item_and_update_quality(self, name, sell_in, quality):
+        items = [Item(name, sell_in, quality)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        return items[0]
 
-        days = 2
-        import sys
-        if len(sys.argv) > 1:
-            days = int(sys.argv[1]) + 1
-        for day in range(days):
-            report_lines.append('-------- day %s --------' % day)
-            report_lines.append('name, sellIn, quality')
-            for item in items:
-                report_lines.append(str(item))
-            report_lines.append('')
-            GildedRose(items).update_quality()
-        self.assertEqual(
-            ['-------- day 0 --------',
-             'name, sellIn, quality',
-             '+5 Dexterity Vest, 10, 20',
-             'Aged Brie, 2, 0',
-             'Aged Brie, -1, 0',
-             'Elixir of the Mongoose, 5, 7',
-             'Elixir of the Mongoose, -1, 7',
-             'Sulfuras, Hand of Ragnaros, 0, 80',
-             'Sulfuras, Hand of Ragnaros, -1, 80',
-             'Backstage passes to a TAFKAL80ETC concert, 15, 20',
-             'Backstage passes to a TAFKAL80ETC concert, 10, 49',
-             'Backstage passes to a TAFKAL80ETC concert, 5, 49',
-             'Backstage passes to a TAFKAL80ETC concert, 4, 47',
-             'Backstage passes to a TAFKAL80ETC concert, -1, 47',
-             'Conjured Mana Cake, 3, 6',
-             '',
-             '-------- day 1 --------',
-             'name, sellIn, quality',
-             '+5 Dexterity Vest, 9, 19',
-             'Aged Brie, 1, 1',
-             'Aged Brie, -2, 2',
-             'Elixir of the Mongoose, 4, 6',
-             'Elixir of the Mongoose, -2, 5',
-             'Sulfuras, Hand of Ragnaros, 0, 80',
-             'Sulfuras, Hand of Ragnaros, -1, 80',
-             'Backstage passes to a TAFKAL80ETC concert, 14, 21',
-             'Backstage passes to a TAFKAL80ETC concert, 9, 50',
-             'Backstage passes to a TAFKAL80ETC concert, 4, 50',
-             'Backstage passes to a TAFKAL80ETC concert, 3, 50',
-             'Backstage passes to a TAFKAL80ETC concert, -2, 0',
-             'Conjured Mana Cake, 2, 5',
-             ''],
-            report_lines)
+    def assert_item_sell_in(self, expected, name, sell_in, quality):
+        item = self.create_item_and_update_quality(name, sell_in, quality)
+        self.assertEqual(expected, item.sell_in)
+
+    def assert_item_quality(self, expected, name, sell_in, quality):
+        item = self.create_item_and_update_quality(name, sell_in, quality)
+        self.assertEqual(expected, item.quality)
+
+    def assert_backstage_passes_quality(self, expected, sell_in, quality):
+        self.assert_item_quality(expected, BACKSTAGE_PASSES, sell_in, quality)
+
+    def assert_backstage_passes_sell_in(self, expected, sell_in, quality):
+        self.assert_item_sell_in(expected, BACKSTAGE_PASSES, sell_in, quality)
+
+    def assert_brie_quality(self, expected, sell_in, quality):
+        self.assert_item_quality(expected, AGED_BRIE, sell_in, quality)
+
+    def assert_brie_sell_in(self, expected, sell_in, quality):
+        self.assert_item_sell_in(expected, AGED_BRIE, sell_in, quality)
+
+    def assert_elixir_quality(self, expected, sell_in, quality):
+        self.assert_item_quality(expected, ELIXIR_OF_THE_MONGOOSE, sell_in, quality)
+
+    def assert_elixir_sell_in(self, expected, sell_in, quality):
+        self.assert_item_sell_in(expected, ELIXIR_OF_THE_MONGOOSE, sell_in, quality)
+
+    def assert_sulfuras_quality(self, expected, sell_in, quality):
+        self.assert_item_quality(expected, SULFURAS, sell_in, quality)
+
+    def assert_sulfuras_sell_in(self, expected, sell_in, quality):
+        self.assert_item_sell_in(expected, SULFURAS, sell_in, quality)
+
+    def test_backstage_pass(self):
+        self.assert_backstage_passes_quality(21, 15, 20)
+        self.assert_backstage_passes_quality(50, 10, 49)
+        self.assert_backstage_passes_quality(50, 5, 49)
+        self.assert_backstage_passes_quality(50, 4, 47)
+        self.assert_backstage_passes_quality(0, -1, 47)
+
+        self.assert_backstage_passes_sell_in(14, 15, 20)
+        self.assert_backstage_passes_sell_in(9, 10, 49)
+        self.assert_backstage_passes_sell_in(4, 5, 49)
+        self.assert_backstage_passes_sell_in(3, 4, 47)
+        self.assert_backstage_passes_sell_in(-2, -1, 47)
+
+    def test_aged_brie(self):
+        self.assert_brie_quality(1, 2, 0)
+        self.assert_brie_quality(2, -1, 0)
+
+        self.assert_brie_sell_in(1, 2, 0)
+        self.assert_brie_sell_in(-2, -1, 0)
+
+    def test_elixir(self):
+        self.assert_elixir_quality(6, 5, 7)
+        self.assert_elixir_quality(5, -1, 7)
+
+        self.assert_elixir_sell_in(4, 5, 7)
+        self.assert_elixir_sell_in(-2, -1, 7)
+
+    def test_dexterity_vest(self):
+        self.assert_item_quality(19, DEXTERITY_VEST, 10, 20)
+
+        self.assert_item_sell_in(9, DEXTERITY_VEST, 10, 20)
+
+    def test_mana_cake(self):
+        self.assert_item_quality(5, CONJURED_MANA_CAKE, 3, 6)
+
+        self.assert_item_sell_in(2, CONJURED_MANA_CAKE, 3, 6)
+
+    def test_sulfuras(self):
+        self.assert_sulfuras_quality(80, 0, 80)
+        self.assert_sulfuras_quality(80, -1, 80)
+
+        self.assert_sulfuras_sell_in(0, 0, 80)
+        self.assert_sulfuras_sell_in(-1, -1, 80)
 
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     unittest.main()
