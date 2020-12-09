@@ -16,16 +16,32 @@ def quality_less_than_50(item):
     return item.quality < 50
 
 
-def named_aged_brie(item):
+def is_aged_brie(item):
     return item.name == AGED_BRIE
 
 
-def named_backstage_pass(item):
+def is_backstage_pass(item):
     return item.name == BACKSTAGE_PASS
 
 
-def named_sulfuras(item):
+def is_sulfuras(item):
     return item.name == SULFURAS
+
+
+def is_generic(item):
+    return not (is_sulfuras(item) or is_backstage_pass(item) or is_aged_brie(item))
+
+
+def handle_backstage_pass(item):
+    if quality_less_than_50(item):
+        increase_quality(item)
+        if item.sell_in < 11:
+            if quality_less_than_50(item):
+                increase_quality(item)
+        if item.sell_in < 6:
+            if quality_less_than_50(item):
+                increase_quality(item)
+    item.sell_in = item.sell_in - 1
 
 
 class GildedRose(object):
@@ -35,33 +51,30 @@ class GildedRose(object):
 
     def update_quality(self):
         for item in self.items:
-            if not named_aged_brie(item) and not named_backstage_pass(item):
+            if is_sulfuras(item):
+                pass
+            elif is_generic(item):
                 if item.quality > 0:
-                    if not named_sulfuras(item):
-                        decrease_quality(item)
-            else:
+                    decrease_quality(item)
+                item.sell_in = item.sell_in - 1
+            elif is_aged_brie(item):
                 if quality_less_than_50(item):
                     increase_quality(item)
-                    if item.name == BACKSTAGE_PASS:
-                        if item.sell_in < 11:
-                            if quality_less_than_50(item):
-                                increase_quality(item)
-                        if item.sell_in < 6:
-                            if quality_less_than_50(item):
-                                increase_quality(item)
-            if not named_sulfuras(item):
                 item.sell_in = item.sell_in - 1
+            elif is_backstage_pass(item):
+                handle_backstage_pass(item)
+
             if item.sell_in < 0:
-                if not named_aged_brie(item):
-                    if not named_backstage_pass(item):
+                if is_aged_brie(item):
+                    if quality_less_than_50(item):
+                        increase_quality(item)
+                else:
+                    if not is_backstage_pass(item):
                         if item.quality > 0:
-                            if not named_sulfuras(item):
+                            if not is_sulfuras(item):
                                 decrease_quality(item)
                     else:
                         item.quality = item.quality - item.quality
-                else:
-                    if quality_less_than_50(item):
-                        increase_quality(item)
 
 
 class Item:
