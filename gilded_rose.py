@@ -28,8 +28,22 @@ def is_sulfuras(item):
     return item.name == SULFURAS
 
 
-def is_generic(item):
-    return not (is_sulfuras(item) or is_backstage_pass(item) or is_aged_brie(item))
+def handle_aged_brie(item):
+    if quality_less_than_50(item):
+        increase_quality(item)
+    item.sell_in = item.sell_in - 1
+    if item.sell_in < 0:
+        if quality_less_than_50(item):
+            increase_quality(item)
+
+
+def handle_generic(item):
+    if item.quality > 0:
+        decrease_quality(item)
+    item.sell_in = item.sell_in - 1
+    if item.sell_in < 0:
+        if item.quality > 0:
+            decrease_quality(item)
 
 
 def handle_backstage_pass(item):
@@ -42,6 +56,8 @@ def handle_backstage_pass(item):
             if quality_less_than_50(item):
                 increase_quality(item)
     item.sell_in = item.sell_in - 1
+    if item.sell_in < 0:
+        item.quality = item.quality - item.quality
 
 
 class GildedRose(object):
@@ -53,28 +69,12 @@ class GildedRose(object):
         for item in self.items:
             if is_sulfuras(item):
                 pass
-            elif is_generic(item):
-                if item.quality > 0:
-                    decrease_quality(item)
-                item.sell_in = item.sell_in - 1
             elif is_aged_brie(item):
-                if quality_less_than_50(item):
-                    increase_quality(item)
-                item.sell_in = item.sell_in - 1
+                handle_aged_brie(item)
             elif is_backstage_pass(item):
                 handle_backstage_pass(item)
-
-            if item.sell_in < 0:
-                if is_aged_brie(item):
-                    if quality_less_than_50(item):
-                        increase_quality(item)
-                else:
-                    if not is_backstage_pass(item):
-                        if item.quality > 0:
-                            if not is_sulfuras(item):
-                                decrease_quality(item)
-                    else:
-                        item.quality = item.quality - item.quality
+            else:
+                handle_generic(item)
 
 
 class Item:
