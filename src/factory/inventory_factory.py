@@ -1,4 +1,4 @@
-from inventory.inventory import Sulfuras, AgedBree, BackstagePass, Generic
+from src.inventory.inventory import Sulfuras, AgedBree, BackstagePass, Generic
 
 SULFURAS = "Sulfuras, Hand of Ragnaros"
 BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert"

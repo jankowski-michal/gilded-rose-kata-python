@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from factory.inventory_factory import GoodCategory
+from src.factory.inventory_factory import GoodCategory
 
 
 class GildedRose(object):

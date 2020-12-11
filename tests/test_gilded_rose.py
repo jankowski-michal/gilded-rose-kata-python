@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from factory.inventory_factory import AGED_BRIE, SULFURAS, BACKSTAGE_PASS
-from gilded_rose import Item, GildedRose
+from src.gilded_rose import Item, GildedRose
 
+SULFURAS = "Sulfuras, Hand of Ragnaros"
+BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert"
+AGED_BRIE = "Aged Brie"
 
 def create_item_and_update_quality(name, sell_in, quality):
     items = [Item(name, sell_in, quality)]
@@ -14,10 +16,10 @@ def create_item_and_update_quality(name, sell_in, quality):
 
 class GildedRoseTest(unittest.TestCase):
     def test_foo(self):
-        items = [Item('foo', 0, 0)]
-        gilded_rose = GildedRose(items)
+        item = Item('foo', 0, 0)
+        gilded_rose = GildedRose([item])
         gilded_rose.update_quality()
-        self.assertEqual('foo', items[0].name)
+        self.assertEqual('foo, -1, 0', str(item))
 
     def assert_item_sell_in(self, expected, name, sell_in, quality):
         item = create_item_and_update_quality(name, sell_in, quality)
