@@ -7,6 +7,7 @@ SULFURAS = "Sulfuras, Hand of Ragnaros"
 BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert"
 AGED_BRIE = "Aged Brie"
 
+
 def create_item_and_update_quality(name, sell_in, quality):
     items = [Item(name, sell_in, quality)]
     gilded_rose = GildedRose(items)
@@ -59,6 +60,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assert_backstage_passes_quality(50, 5, 49)
         self.assert_backstage_passes_quality(50, 4, 47)
         self.assert_backstage_passes_quality(0, -1, 47)
+        self.assert_backstage_passes_quality(23, 1, 20)  # kills 2 mutants
 
         self.assert_backstage_passes_sell_in(14, 15, 20)
         self.assert_backstage_passes_sell_in(9, 10, 49)
@@ -78,6 +80,8 @@ class GildedRoseTest(unittest.TestCase):
         self.assert_generic_quality(5, -1, 7)
         self.assert_generic_quality(19, 10, 20)
         self.assert_generic_quality(5, 3, 6)
+        self.assert_generic_quality(1, 1, 2)  # kills 2 mutants
+        self.assert_generic_quality(0, 0, 2)  # kills 1 mutant
 
         self.assert_generic_sell_in(4, 5, 7)
         self.assert_generic_sell_in(-2, -1, 7)
